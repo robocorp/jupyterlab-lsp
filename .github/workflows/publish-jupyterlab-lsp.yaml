@@ -1,0 +1,42 @@
+# https://dev.to/michi/publish-to-npm-automatically-with-github-actions-5805
+# https://docs.github.com/en/free-pro-team@latest/actions/guides/publishing-nodejs-packages
+
+name: publish-jupyterlab-lsp
+
+on:
+  release:
+    types: [created]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        ref: ${{ github.event.release.target_commitish }}
+    - uses: actions/setup-ruby@v1
+      with:
+        ruby-version: '2.5'
+    - uses: actions/setup-python@v1
+      with:
+        python-version: '3.7'
+    - uses: actions/setup-node@v1
+      with:
+        node-version: '12.x'
+        registry-url: 'https://npm.pkg.github.com'
+        scope: '@robocorp'
+    - run: pip install jupyterlab==3.0.0.rc10
+    - run: jlpm bootstrap
+    - run: rake what
+    - run: rake envsetup
+    - run: rake package
+    - run: |
+        npm ci
+        git config --global user.name "publish-jupyterlab-lsp"
+        git config --global user.email "publish-jupyterlab-lsp@example.com"
+        npm version ${{ github.event.release.tag_name }} --allow-same-version
+        npm run build
+        npm publish
+      working-directory: publish
+      env:
+        NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
