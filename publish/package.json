@@ -1,0 +1,21 @@
+{
+  "name": "@robocorp/jupyterlab-lsp",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "node ./scripts/build.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/robocorp/jupyterlab-lsp.git"
+  },
+  "author": "Robocorp",
+  "license": "BSD-3-Clause",
+  "files": [
+    "dist/**/*"
+  ],
+  "devDependencies": {
+    "shelljs": "^0.8.4"
+  }
+}
